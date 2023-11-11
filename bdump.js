@@ -6,6 +6,8 @@ const hex   = e => '0x' + e .toString(16);
 
 const is_usermode = e => e.bitwiseShiftRight(63) == 0;
 
+function curthread() { return host.namespace.Debugger.State.DebuggerVariables.curthread; }
+
 function usage() {
     logln('[bdump] Usage: !bdump "C:\\\\path\\\\to\\\\dump"')
     logln('[bdump] Usage: !bdump_full "C:\\\\path\\\\to\\\\dump"')
@@ -125,7 +127,7 @@ function __collect_segs(regs) {
 }
 
 function __collect_user(regs) {
-    const User = host.currentThread.Registers.User;
+    const User = curthread().Registers.User;
 
     regs.rax = User.rax;
     regs.rbx = User.rbx;
@@ -158,7 +160,7 @@ function __collect_user(regs) {
 }
 
 function __collect_fp(regs) {
-    const Fprs = host.currentThread.Registers.FloatingPoint;
+    const Fprs = curthread().Registers.FloatingPoint;
 
     regs.fpcw = Fprs.fpcw;
     regs.fpsw = Fprs.fpsw;
@@ -176,7 +178,7 @@ function __collect_fp(regs) {
 }
 
 function __collect_simd(regs) {
-    const Simd = host.currentThread.Registers.SIMD;
+    const Simd = curthread().Registers.SIMD;
 
     // XXX TODO XXX
 
@@ -186,7 +188,7 @@ function __collect_simd(regs) {
 }
 
 function __collect_kern(regs) {
-    const Kern = host.currentThread.Registers.Kernel;
+    const Kern = curthread().Registers.Kernel;
 
     regs.cr0 = Kern.cr0;
     regs.cr2 = Kern.cr2;
